@@ -256,18 +256,58 @@ const userState = new UserState(storage);
 
 3. Remember to call `await conversationState.saveChanges(context);` at the end of each turn.
 
-## 8. Local Testing
+## 8. Run the Bot Locally and Validate It
 
-1. Run the bot locally:
+1. **Install dependencies and build**
 
-```bash
-npm run build
-npm start
-```
+   ```bash
+   npm install
+   npm run build
+   ```
 
-2. Start **Bot Framework Emulator** and connect to `http://localhost:3978/api/messages` with the Microsoft App ID/Password (or use the Emulator’s `open bot` with no credentials for local testing).
+   The build step compiles TypeScript sources and ensures the bot starts with the latest changes.
 
-3. Validate message exchange, generative responses, and error handling. Use Emulator’s inspection features to review activities and state.
+2. **Set runtime configuration**
+
+   Create a `.env` file (or update `config/default.json`) with the values you captured when provisioning resources:
+
+   ```ini
+   MicrosoftAppId=<app-id-from-azure-ad-registration>
+   MicrosoftAppPassword=<client-secret>
+   AZURE_OPENAI_ENDPOINT=https://aoai-genai.openai.azure.com/
+   AZURE_OPENAI_KEY=<key>
+   AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+   ```
+
+   > 💡 When using the Bot Framework Emulator purely for local testing, you can leave `MicrosoftAppId` and `MicrosoftAppPassword` empty; the Emulator will negotiate a local connection without OAuth.
+
+3. **Launch the bot**
+
+   ```bash
+   npm start
+   ```
+
+   By default the generated templates listen on `http://localhost:3978`. The console logs will show `restify listening to http://[::]:3978` when the endpoint is live.
+
+4. **Connect with Bot Framework Emulator**
+
+   1. Open the Emulator and select **Open Bot**.
+   2. Enter `http://localhost:3978/api/messages` as the endpoint URL.
+   3. Supply the Microsoft App ID and password if you configured them in step 2; otherwise leave blank.
+   4. Send a message such as “Hello” and confirm the bot echoes a generative response from Azure OpenAI.
+
+   Use the Emulator’s **Inspector** pane to view the full activity payloads, conversation state, and LLM prompts/responses captured in your telemetry middleware.
+
+5. **Exercise automated checks (optional but recommended)**
+
+   * **Dialog unit tests:** Use the Bot Framework TestAdapter inside a Jest or xUnit test project to simulate turns and validate dialog outcomes without the Emulator.
+   * **Generative service smoke test:** Trigger the `AzureOpenAiService` directly with a canned prompt to verify credentials and deployment names before full conversational testing.
+
+6. **Troubleshoot**
+
+   * HTTP 401 errors typically mean the Microsoft App credentials are missing or incorrect.
+   * HTTP 429/503 responses from Azure OpenAI signal quota or capacity issues—retry with exponential backoff or request higher limits in Azure.
+   * Use `ngrok http 3978` when you need to expose the bot to remote channels (e.g., Teams) during development.
 
 ## 9. Deployment
 
