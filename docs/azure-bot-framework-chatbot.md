@@ -258,7 +258,9 @@ const userState = new UserState(storage);
 
 ## 8. Run the Bot Locally and Validate It
 
-1. **Install dependencies and build**
+1. **Install dependencies**
+
+   *Node.js template*
 
    ```bash
    npm install
@@ -267,9 +269,15 @@ const userState = new UserState(storage);
 
    The build step compiles TypeScript sources and ensures the bot starts with the latest changes.
 
+   *Python sample (available in this repository under `bot/`)*
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
 2. **Set runtime configuration**
 
-   Create a `.env` file (or update `config/default.json`) with the values you captured when provisioning resources:
+   Create a `.env` file (or export environment variables) with the values you captured when provisioning resources:
 
    ```ini
    MicrosoftAppId=<app-id-from-azure-ad-registration>
@@ -279,15 +287,27 @@ const userState = new UserState(storage);
    AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
    ```
 
-   > 💡 When using the Bot Framework Emulator purely for local testing, you can leave `MicrosoftAppId` and `MicrosoftAppPassword` empty; the Emulator will negotiate a local connection without OAuth.
+   For the Python sample, the corresponding variables are `MICROSOFT_APP_ID`, `MICROSOFT_APP_PASSWORD`, `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT`, and `AZURE_OPENAI_API_KEY`.
+
+   > 💡 When using the Bot Framework Emulator purely for local testing, you can leave the Microsoft App credentials empty; the Emulator will negotiate a local connection without OAuth.
 
 3. **Launch the bot**
+
+   *Node.js template*
 
    ```bash
    npm start
    ```
 
    By default the generated templates listen on `http://localhost:3978`. The console logs will show `restify listening to http://[::]:3978` when the endpoint is live.
+
+   *Python sample*
+
+   ```bash
+   python -m bot
+   ```
+
+   The aiohttp server binds to `http://0.0.0.0:3978` by default; adjust the `PORT` environment variable to change the listening port.
 
 4. **Connect with Bot Framework Emulator**
 

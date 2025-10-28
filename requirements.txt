@@ -1,0 +1,6 @@
+aiohttp==3.9.5
+botbuilder-core==4.15.0
+botbuilder-integration-aiohttp==4.15.0
+azure-ai-openai==1.0.0
+pytest==8.2.2
+pytest-asyncio==0.23.7
